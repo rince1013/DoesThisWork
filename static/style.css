@@ -273,6 +273,81 @@ label, .field-label {
 .p-emoji { font-size: 1rem; }
 .p-name { font-weight: 500; }
 
+/* ─── Calendar ────────────────────────────────────────────────── */
+.cal { margin-bottom: 4px; }
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.cal-title { font-weight: 700; font-size: 1rem; }
+
+.cal-nav {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  color: var(--text);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  transition: background .1s, color .1s;
+}
+.cal-nav:hover { background: var(--accent-bg); color: var(--accent); }
+.cal-nav:active { transform: scale(.88); }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 10px;
+}
+.cal-day-label {
+  text-align: center;
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 4px 0 6px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  min-height: 38px;
+  transition: background .1s, color .1s, transform .1s;
+}
+.cal-day:hover:not(:disabled) { background: var(--accent-bg); color: var(--accent); }
+.cal-day:active:not(:disabled) { transform: scale(.82); }
+.cal-day.cal-today { font-weight: 800; border: 2px solid var(--accent); color: var(--accent); }
+.cal-day.cal-selected { background: var(--accent); color: #fff; border: none; }
+.cal-day.cal-selected.cal-today { background: var(--accent); }
+.cal-day.cal-past { color: var(--border); cursor: default; }
+
+.cal-manual {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 10px;
+}
+.cal-manual .date-input { flex: 1; margin-bottom: 0; }
+
+.cal-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.cal-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 8px 0 12px;
+  background: var(--accent-bg); color: var(--accent);
+  border-radius: 20px; font-size: .8rem; font-weight: 600;
+}
+.cal-chip-remove {
+  font-size: .75rem; color: var(--accent-dim);
+  width: 18px; height: 18px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .1s;
+}
+.cal-chip-remove:hover { background: #dde4fd; }
+
 /* ─── HTMX indicator ──────────────────────────────────────────── */
 .htmx-indicator { display: none; }
 .htmx-request .htmx-indicator { display: inline-block; }

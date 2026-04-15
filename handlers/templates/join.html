@@ -1,12 +1,12 @@
 {{define "join"}}
 <div class="join-card card">
-  <p class="join-title">👋 Who are you?</p>
+  <p class="join-title">👋 {{if .IsCreator}}You're the host — what's your name?{{else}}Who are you?{{end}}</p>
   <form hx-post="/events/{{.EventId}}/join"
         hx-target="body"
         hx-push-url="true">
     <div class="field">
-      <label class="field-label">Your name</label>
-      <input type="text" name="name" placeholder="e.g. Alex" required class="text-input" autocomplete="given-name" maxlength="50">
+      <label class="field-label" for="join-name">Your name</label>
+      <input type="text" id="join-name" name="name" placeholder="e.g. Alex" required class="text-input" autocomplete="given-name" maxlength="50">
     </div>
     <div class="field">
       <label class="field-label">Pick an emoji</label>

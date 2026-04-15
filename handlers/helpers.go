@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -37,7 +38,7 @@ func setCreatorCookie(e *core.RequestEvent, eventId, token string) {
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   isSecure(e.Request),
 		MaxAge:   60 * 60 * 24 * 365,
 	})
 }
@@ -49,9 +50,14 @@ func setParticipantCookie(e *core.RequestEvent, eventId, token string) {
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   isSecure(e.Request),
 		MaxAge:   60 * 60 * 24 * 365,
 	})
+}
+
+// isSecure returns true when the request arrived over HTTPS (directly or via proxy).
+func isSecure(r *http.Request) bool {
+	return r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https"
 }
 
 func newToken() string {
@@ -222,11 +228,11 @@ func buildEventPageData(app core.App, e *core.RequestEvent, event *core.Record) 
 	}, nil
 }
 
-// formatDate converts "2006-01-02" to "Mon, Jan 2, 2006".
+// formatDate converts "2006-01-02" to "Thursday, 4/16/2026".
 func formatDate(raw string) string {
 	t, err := time.Parse("2006-01-02", raw)
 	if err != nil {
 		return raw
 	}
-	return t.Format("Mon, Jan 2, 2006")
+	return fmt.Sprintf("%s, %d/%d/%d", t.Format("Monday"), int(t.Month()), t.Day(), t.Year())
 }

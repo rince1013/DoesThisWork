@@ -23,12 +23,7 @@
 
     <div class="field">
       <label>Pick some dates to vote on</label>
-      <div id="dates-list">
-        <input class="date-input" name="dates" type="date" required>
-        <input class="date-input" name="dates" type="date">
-        <input class="date-input" name="dates" type="date">
-      </div>
-      <button type="button" class="btn-ghost" onclick="addDateField()">+ Add another date</button>
+      <div data-calendar="multi" id="main-cal"></div>
     </div>
 
     <button type="submit" class="btn-primary">Create &amp; Get Link →</button>

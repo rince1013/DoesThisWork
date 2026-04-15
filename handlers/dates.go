@@ -44,6 +44,19 @@ func addDateHandler(app core.App) func(*core.RequestEvent) error {
 			return e.BadRequestError("date is required", nil)
 		}
 
+		// reject duplicate dates for this event
+		existing, _ := app.FindFirstRecordByFilter("date_options",
+			"event_id={:eid} && date={:d}",
+			dbx.Params{"eid": eventId, "d": form.Date},
+		)
+		if existing != nil {
+			data, err := buildEventPageData(app, e, event)
+			if err != nil {
+				return err
+			}
+			return renderFragment(e, "results", data)
+		}
+
 		col, err := app.FindCollectionByNameOrId("date_options")
 		if err != nil {
 			return err

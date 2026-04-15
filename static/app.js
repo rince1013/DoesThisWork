@@ -1,13 +1,201 @@
-// ── Date field management ───────────────────────────────────────
-function addDateField() {
-  const list = document.getElementById('dates-list');
-  if (!list) return;
-  const input = document.createElement('input');
-  input.className = 'date-input';
-  input.name = 'dates';
-  input.type = 'date';
-  list.appendChild(input);
-  input.focus();
+// ── Calendar ─────────────────────────────────────────────────────
+class Calendar {
+  constructor(container) {
+    this.container = container;
+    this.mode = container.dataset.calendar; // "multi" or "single"
+    this.inputName = container.dataset.inputName || (this.mode === 'multi' ? 'dates' : 'date');
+    if (!container.id) container.id = 'cal-' + Math.random().toString(36).slice(2, 8);
+    this.id = container.id;
+    this.selected = new Set();
+    this.today = this._localDate(new Date());
+    this.current = new Date(this.today.getFullYear(), this.today.getMonth(), 1);
+    container._calendar = this;
+    this.render();
+  }
+
+  _localDate(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  _fmt(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  _parse(str) {
+    const [y, m, d] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  render() {
+    this.container.innerHTML = '';
+    this.container.appendChild(this._renderGrid());
+    this.container.appendChild(this._renderManual());
+    if (this.selected.size > 0) this.container.appendChild(this._renderChips());
+    this._syncInputs();
+  }
+
+  reset() {
+    this.selected.clear();
+    this.render();
+  }
+
+  _renderGrid() {
+    const wrap = document.createElement('div');
+    wrap.className = 'cal';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'cal-header';
+
+    const prev = document.createElement('button');
+    prev.type = 'button'; prev.className = 'cal-nav'; prev.textContent = '‹';
+    prev.onclick = () => { this.current = new Date(this.current.getFullYear(), this.current.getMonth() - 1, 1); this.render(); };
+
+    const title = document.createElement('span');
+    title.className = 'cal-title';
+    title.textContent = this.current.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    const next = document.createElement('button');
+    next.type = 'button'; next.className = 'cal-nav'; next.textContent = '›';
+    next.onclick = () => { this.current = new Date(this.current.getFullYear(), this.current.getMonth() + 1, 1); this.render(); };
+
+    header.appendChild(prev); header.appendChild(title); header.appendChild(next);
+    wrap.appendChild(header);
+
+    // Grid
+    const grid = document.createElement('div');
+    grid.className = 'cal-grid';
+
+    ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-day-label';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    const year = this.current.getFullYear();
+    const month = this.current.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = this._fmt(this.today);
+
+    for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const dateStr = this._fmt(date);
+      const isPast = date < this.today;
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'cal-day';
+      if (isPast) cell.classList.add('cal-past');
+      if (dateStr === todayStr) cell.classList.add('cal-today');
+      if (this.selected.has(dateStr)) cell.classList.add('cal-selected');
+      cell.textContent = d;
+      cell.dataset.date = dateStr;
+      cell.disabled = isPast;
+      if (!isPast) cell.onclick = () => this._toggle(dateStr, cell);
+      grid.appendChild(cell);
+    }
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  _renderManual() {
+    const row = document.createElement('div');
+    row.className = 'cal-manual';
+
+    const input = document.createElement('input');
+    input.type = 'date';
+    input.className = 'date-input';
+
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'btn-ghost'; btn.textContent = '+ Add date';
+    btn.onclick = () => { if (input.value) { this._add(input.value); input.value = ''; } };
+
+    row.appendChild(input); row.appendChild(btn);
+    return row;
+  }
+
+  _renderChips() {
+    const wrap = document.createElement('div');
+    wrap.className = 'cal-chips';
+
+    [...this.selected].sort().forEach(dateStr => {
+      const chip = document.createElement('div');
+      chip.className = 'cal-chip';
+
+      const label = document.createElement('span');
+      label.textContent = this._parse(dateStr).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+      const rm = document.createElement('button');
+      rm.type = 'button'; rm.className = 'cal-chip-remove'; rm.textContent = '✕';
+      rm.setAttribute('aria-label', 'Remove ' + label.textContent);
+      rm.onclick = () => {
+        this.selected.delete(dateStr);
+        const cell = this.container.querySelector(`.cal-day[data-date="${dateStr}"]`);
+        if (cell) cell.classList.remove('cal-selected');
+        this._updateChips();
+        this._syncInputs();
+      };
+
+      chip.appendChild(label); chip.appendChild(rm);
+      wrap.appendChild(chip);
+    });
+
+    return wrap;
+  }
+
+  _toggle(dateStr, cell) {
+    if (this.mode === 'single') {
+      this.container.querySelectorAll('.cal-day.cal-selected').forEach(el => el.classList.remove('cal-selected'));
+      this.selected.clear();
+      this.selected.add(dateStr);
+      cell.classList.add('cal-selected');
+    } else {
+      if (this.selected.has(dateStr)) {
+        this.selected.delete(dateStr);
+        cell.classList.remove('cal-selected');
+      } else {
+        this.selected.add(dateStr);
+        cell.classList.add('cal-selected');
+      }
+    }
+    this._updateChips();
+    this._syncInputs();
+  }
+
+  _updateChips() {
+    const existing = this.container.querySelector('.cal-chips');
+    if (existing) existing.remove();
+    if (this.selected.size > 0) this.container.appendChild(this._renderChips());
+  }
+
+  _add(dateStr) {
+    if (this.mode === 'single') this.selected.clear();
+    this.selected.add(dateStr);
+    const d = this._parse(dateStr);
+    this.current = new Date(d.getFullYear(), d.getMonth(), 1);
+    this.render();
+  }
+
+  _syncInputs() {
+    const form = this.container.closest('form');
+    if (!form) return;
+    form.querySelectorAll(`input[data-cal="${this.id}"]`).forEach(el => el.remove());
+    this.selected.forEach(dateStr => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = this.inputName;
+      input.value = dateStr;
+      input.dataset.cal = this.id;
+      form.appendChild(input);
+    });
+  }
 }
 
 // ── Emoji picker ────────────────────────────────────────────────
@@ -41,6 +229,20 @@ function copyLink() {
 document.addEventListener('DOMContentLoaded', () => {
   const firstEmoji = document.querySelector('.emoji-btn');
   if (firstEmoji) firstEmoji.classList.add('selected');
+
+  // Init all calendars
+  document.querySelectorAll('[data-calendar]').forEach(el => new Calendar(el));
+});
+
+// Reset single-mode calendars after a successful HTMX date submission
+document.addEventListener('htmx:afterRequest', (e) => {
+  if (!e.detail.successful || e.detail.requestConfig.verb !== 'post') return;
+  const form = e.detail.elt.closest('form') || e.detail.elt;
+  if (form) {
+    form.querySelectorAll('[data-calendar="single"]').forEach(el => {
+      if (el._calendar) el._calendar.reset();
+    });
+  }
 });
 
 // ── Realtime updates ────────────────────────────────────────────
