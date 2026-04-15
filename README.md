@@ -41,50 +41,38 @@ The PocketBase admin dashboard is at [http://localhost:8090/_/](http://localhost
 ### Available commands
 
 ```bash
-make run          # Start dev server at localhost:8090
-make build        # Build binary for current platform
-make build-linux  # Cross-compile ARM64 Linux binary (for deployment)
-make clean        # Remove built binary
-make deploy       # Build + deploy to VPS (see Deployment below)
-make logs         # Tail logs on the VPS
+make run      # Start dev server at localhost:8090
+make build    # Build binary for current platform
+make deploy   # git push → triggers Render auto-deploy
+make clean    # Remove built binary
 ```
 
 ## Deployment
 
-The app compiles to a single self-contained binary — the server needs no Go runtime.
+Hosted on [Render](https://render.com). Deploys automatically on every push to `main`.
 
-### 1. Build and copy
+### First-time setup on Render
 
-```bash
-DEPLOY_HOST=your.vps.ip DEPLOY_USER=ubuntu make deploy
-```
+1. **Create a Web Service** — connect your GitHub repo, then set:
+   - **Build Command:** `go build -o doesthiswork .`
+   - **Start Command:** `./doesthiswork serve --http=0.0.0.0:$PORT --dir=/var/data/pb_data`
+   - **Instance Type:** Free
 
-This cross-compiles for Linux ARM64, copies the binary + static files to `/opt/doesthiswork` on the server, and restarts the service.
+2. **Add a Persistent Disk** (required — free tier filesystem is ephemeral):
+   - Settings → **Disks → Add Disk**
+   - **Mount Path:** `/var/data`
+   - **Size:** 1 GB (~$0.25/month)
 
-### 2. First-time server setup
+3. **Add custom domain** — Settings → **Custom Domains** → `dtw.raishadandlisa.com`
+   - Render gives you a CNAME value to add on Namecheap (Advanced DNS → CNAME Record, Host: `dtw`)
 
-```bash
-# Copy the systemd unit
-scp doesthiswork.service ubuntu@your.vps.ip:/etc/systemd/system/
-ssh ubuntu@your.vps.ip
-
-# On the server
-sudo mkdir -p /opt/doesthiswork/pb_data
-sudo systemctl enable --now doesthiswork
-```
-
-### 3. Nginx + SSL
-
-Edit `nginx.conf` — replace `your.domain.com` with your domain, then:
+### Deploy
 
 ```bash
-sudo cp nginx.conf /etc/nginx/sites-available/doesthiswork
-sudo ln -s /etc/nginx/sites-available/doesthiswork /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-
-# Free SSL via Certbot
-sudo certbot --nginx -d your.domain.com
+make deploy   # or just: git push origin main
 ```
+
+Render builds and restarts automatically. No SSH, no Caddy — HTTPS is handled by Render.
 
 ## Project structure
 
@@ -106,8 +94,8 @@ sudo certbot --nginx -d your.domain.com
 ├── static/
 │   ├── style.css            # Mobile-first CSS
 │   └── app.js               # Realtime subscriptions, emoji picker, clipboard
-├── doesthiswork.service     # systemd unit
-└── nginx.conf               # Reverse proxy config
+├── doesthiswork.service     # systemd unit (VPS alternative)
+├── Caddyfile                # Reverse proxy config (automatic HTTPS)
 ```
 
 ## Identity (no login)
