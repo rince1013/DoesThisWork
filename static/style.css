@@ -332,11 +332,29 @@ label, .field-label {
   user-select: none;
   -webkit-user-select: none;
 }
-.cal-day:hover:not(:disabled) { background: var(--accent-bg); color: var(--accent); }
 .cal-day:active:not(:disabled) { transform: scale(.82); }
-.cal-day.cal-today { font-weight: 800; border: 2px solid var(--accent); color: var(--accent); }
+@media (hover: hover) {
+  .cal-day:hover:not(:disabled) { background: var(--accent-bg); color: var(--accent); }
+}
+.cal-day.cal-today {
+  font-weight: 800;
+  color: var(--accent);
+  position: relative;
+}
+.cal-day.cal-today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
 .cal-day.cal-selected { background: var(--accent); color: #fff; border: none; }
-.cal-day.cal-selected.cal-today { background: var(--accent); }
+.cal-day.cal-selected.cal-today { background: var(--accent); color: #fff; }
+.cal-day.cal-selected.cal-today::after { background: #fff; }
 .cal-day.cal-past { color: var(--border); cursor: default; }
 
 .cal-manual {
