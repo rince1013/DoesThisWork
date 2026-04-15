@@ -274,7 +274,7 @@ label, .field-label {
 .p-name { font-weight: 500; }
 
 /* ─── Calendar ────────────────────────────────────────────────── */
-.cal { margin-bottom: 4px; }
+.cal { margin-bottom: 4px; user-select: none; -webkit-user-select: none; }
 
 .cal-header {
   display: flex;
@@ -319,6 +319,9 @@ label, .field-label {
   width: 100%;
   min-height: 38px;
   transition: background .1s, color .1s, transform .1s;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .cal-day:hover:not(:disabled) { background: var(--accent-bg); color: var(--accent); }
 .cal-day:active:not(:disabled) { transform: scale(.82); }

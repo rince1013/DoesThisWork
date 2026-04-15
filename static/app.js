@@ -32,7 +32,7 @@ class Calendar {
   render() {
     this.container.innerHTML = '';
     this.container.appendChild(this._renderGrid());
-    this.container.appendChild(this._renderManual());
+    if (this.mode !== 'single') this.container.appendChild(this._renderManual());
     if (this.selected.size > 0) this.container.appendChild(this._renderChips());
     this._syncInputs();
   }
@@ -52,7 +52,7 @@ class Calendar {
 
     const prev = document.createElement('button');
     prev.type = 'button'; prev.className = 'cal-nav'; prev.textContent = '‹';
-    prev.onclick = () => { this.current = new Date(this.current.getFullYear(), this.current.getMonth() - 1, 1); this.render(); };
+    prev.addEventListener('pointerdown', (e) => { e.preventDefault(); this.current = new Date(this.current.getFullYear(), this.current.getMonth() - 1, 1); this.render(); });
 
     const title = document.createElement('span');
     title.className = 'cal-title';
@@ -60,7 +60,7 @@ class Calendar {
 
     const next = document.createElement('button');
     next.type = 'button'; next.className = 'cal-nav'; next.textContent = '›';
-    next.onclick = () => { this.current = new Date(this.current.getFullYear(), this.current.getMonth() + 1, 1); this.render(); };
+    next.addEventListener('pointerdown', (e) => { e.preventDefault(); this.current = new Date(this.current.getFullYear(), this.current.getMonth() + 1, 1); this.render(); });
 
     header.appendChild(prev); header.appendChild(title); header.appendChild(next);
     wrap.appendChild(header);
@@ -97,7 +97,12 @@ class Calendar {
       cell.textContent = d;
       cell.dataset.date = dateStr;
       cell.disabled = isPast;
-      if (!isPast) cell.onclick = () => this._toggle(dateStr, cell);
+      if (!isPast) {
+        cell.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          this._toggle(dateStr, cell);
+        });
+      }
       grid.appendChild(cell);
     }
 
@@ -135,13 +140,14 @@ class Calendar {
       const rm = document.createElement('button');
       rm.type = 'button'; rm.className = 'cal-chip-remove'; rm.textContent = '✕';
       rm.setAttribute('aria-label', 'Remove ' + label.textContent);
-      rm.onclick = () => {
+      rm.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
         this.selected.delete(dateStr);
         const cell = this.container.querySelector(`.cal-day[data-date="${dateStr}"]`);
         if (cell) cell.classList.remove('cal-selected');
         this._updateChips();
         this._syncInputs();
-      };
+      });
 
       chip.appendChild(label); chip.appendChild(rm);
       wrap.appendChild(chip);
