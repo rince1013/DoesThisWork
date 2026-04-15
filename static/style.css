@@ -1,0 +1,278 @@
+/* ─── Reset & Base ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent:      #6366f1;
+  --accent-dim:  #818cf8;
+  --accent-bg:   #eef2ff;
+  --green:       #22c55e;
+  --green-bg:    #dcfce7;
+  --red:         #ef4444;
+  --locked:      #f59e0b;
+  --locked-bg:   #fef3c7;
+  --bg:          #f9fafb;
+  --surface:     #ffffff;
+  --border:      #e5e7eb;
+  --text:        #111827;
+  --muted:       #6b7280;
+  --radius:      14px;
+  --shadow:      0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  --tap:         44px;
+}
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.5; }
+
+a { color: var(--accent); text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* ─── Layout ──────────────────────────────────────────────────── */
+.app { max-width: 480px; margin: 0 auto; padding: 16px 16px 60px; min-height: 100dvh; }
+
+/* ─── Cards ───────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+
+/* ─── Fields ──────────────────────────────────────────────────── */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+
+label, .field-label {
+  display: block;
+  font-weight: 600;
+  font-size: .875rem;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.optional { font-weight: 400; color: var(--muted); }
+
+.text-input, input[type="text"], input[type="date"] {
+  width: 100%;
+  height: var(--tap);
+  padding: 0 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--surface);
+  transition: border-color .15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.text-input:focus, input[type="text"]:focus, input[type="date"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0 22px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background .15s, transform .1s;
+}
+.btn-primary:active { transform: scale(.97); background: #4f52c9; }
+.btn-full { width: 100%; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  color: var(--accent);
+  font-size: .875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background .15s;
+}
+.btn-ghost:hover { background: var(--accent-bg); }
+
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 38px;
+  padding: 0 16px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: .875rem;
+  font-weight: 600;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.btn-share:active { background: #dde4fd; }
+.btn-share.copied { background: var(--green-bg); color: var(--green); }
+
+/* ─── Landing page ────────────────────────────────────────────── */
+.hero { text-align: center; padding: 32px 0 24px; }
+.hero-icon { font-size: 3rem; margin-bottom: 8px; }
+.hero h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.5px; }
+.hero-sub { color: var(--muted); margin-top: 6px; }
+
+.date-input { margin-bottom: 8px; }
+
+/* ─── Event header ────────────────────────────────────────────── */
+.event-header { padding-bottom: 4px; }
+.back-link { font-size: .875rem; color: var(--muted); display: inline-block; margin-bottom: 8px; }
+.event-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -.3px; }
+.event-desc { color: var(--muted); margin-top: 4px; font-size: .95rem; }
+
+.share-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--accent-bg);
+  border-radius: 10px;
+}
+.share-label { font-size: .875rem; color: var(--accent); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ─── Locked banner ───────────────────────────────────────────── */
+.locked-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--locked-bg);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.locked-icon { font-size: 2rem; }
+.locked-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; color: var(--locked); letter-spacing: .05em; }
+.locked-date { font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
+
+/* ─── Date cards ──────────────────────────────────────────────── */
+.dates-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+.date-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  transition: border-color .15s;
+}
+.date-card.voted { border-color: var(--accent); background: var(--accent-bg); }
+.date-card.locked { border-color: var(--locked); background: var(--locked-bg); }
+
+.date-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.date-info { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rank-badge { font-size: 1.1rem; flex-shrink: 0; }
+.date-label { font-weight: 600; font-size: 1rem; }
+
+.date-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.vote-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 20px;
+  font-size: .875rem;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  transition: all .15s;
+}
+.vote-btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.vote-btn:active { transform: scale(.95); }
+
+.lock-btn, .delete-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: .9rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.lock-btn:hover { background: var(--locked-bg); border-color: var(--locked); }
+.delete-btn:hover { background: #fee2e2; border-color: var(--red); }
+
+.date-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.voters { display: flex; gap: -4px; }
+.voter-emoji { font-size: 1.1rem; }
+.vote-count { font-size: .8rem; color: var(--muted); }
+
+/* ─── No dates ────────────────────────────────────────────────── */
+.no-dates p { color: var(--muted); text-align: center; padding: 8px 0; }
+
+/* ─── Add date section ────────────────────────────────────────── */
+.section-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: .05em; margin-bottom: 12px; }
+.date-add-row { display: flex; gap: 8px; }
+.date-add-row .date-input { flex: 1; margin-bottom: 0; }
+.date-add-row .btn-primary { padding: 0 18px; }
+
+/* ─── Join card ───────────────────────────────────────────────── */
+.join-card { border: 2px dashed var(--accent); }
+.join-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+
+/* ─── Emoji picker ────────────────────────────────────────────── */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.emoji-btn {
+  aspect-ratio: 1;
+  font-size: 1.4rem;
+  border-radius: 8px;
+  transition: background .1s, transform .1s;
+  background: var(--bg);
+  border: 2px solid transparent;
+}
+.emoji-btn:active { transform: scale(.88); }
+.emoji-btn.selected { border-color: var(--accent); background: var(--accent-bg); }
+
+/* ─── Participants ────────────────────────────────────────────── */
+.participants-section { margin-top: 4px; }
+.participants-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.participant-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: .875rem;
+}
+.p-emoji { font-size: 1rem; }
+.p-name { font-weight: 500; }
+
+/* ─── HTMX indicator ──────────────────────────────────────────── */
+.htmx-indicator { display: none; }
+.htmx-request .htmx-indicator { display: inline-block; }

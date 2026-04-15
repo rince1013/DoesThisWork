@@ -1,0 +1,18 @@
+{{define "base"}}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#6366f1">
+  <title>{{block "title" .}}Does This Work?{{end}}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://unpkg.com/htmx.org@2.0.3" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.26.0/dist/pocketbase.umd.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    {{block "content" .}}{{end}}
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>{{end}}

@@ -1,0 +1,58 @@
+{{define "results"}}
+<div id="results">
+  {{template "results-content" .}}
+</div>
+{{end}}
+
+{{define "results-content"}}
+{{if .DateOptions}}
+<div class="dates-list">
+  {{range $i, $d := .DateOptions}}
+  <div class="date-card {{if $d.UserVoted}}voted{{end}} {{if and $.IsLocked (eq $.LockedDate.Id $d.Id)}}locked{{end}}">
+    <div class="date-card-top">
+      <div class="date-info">
+        {{if eq $i 0}}<span class="rank-badge">🥇</span>{{else if eq $i 1}}<span class="rank-badge">🥈</span>{{else if eq $i 2}}<span class="rank-badge">🥉</span>{{end}}
+        <span class="date-label">{{$d.DateLabel}}</span>
+      </div>
+      <div class="date-actions">
+        {{if and $.IsParticipant (not $.IsLocked)}}
+        <button class="vote-btn {{if $d.UserVoted}}vote-btn--active{{end}}"
+          hx-post="/events/{{$.EventId}}/votes/{{$d.Id}}"
+          hx-target="#results"
+          hx-swap="outerHTML">
+          {{if $d.UserVoted}}✓ Going{{else}}+ Going{{end}}
+        </button>
+        {{end}}
+        {{if and $.IsCreator (not $.IsLocked)}}
+        <button class="lock-btn"
+          hx-post="/events/{{$.EventId}}/lock/{{$d.Id}}"
+          hx-target="#results"
+          hx-swap="outerHTML"
+          hx-confirm="Lock {{$d.DateLabel}} as the final date?">
+          🔒
+        </button>
+        <button class="delete-btn"
+          hx-delete="/events/{{$.EventId}}/dates/{{$d.Id}}"
+          hx-target="#results"
+          hx-swap="outerHTML"
+          hx-confirm="Remove this date?">
+          ✕
+        </button>
+        {{end}}
+      </div>
+    </div>
+    <div class="date-card-bottom">
+      <div class="voters">
+        {{range $d.Voters}}<span class="voter-emoji" title="{{.Name}}">{{.Emoji}}</span>{{end}}
+      </div>
+      <span class="vote-count">{{$d.VoteCount}} {{if eq $d.VoteCount 1}}person{{else}}people{{end}}</span>
+    </div>
+  </div>
+  {{end}}
+</div>
+{{else}}
+<div class="no-dates card">
+  <p>No dates yet. {{if $.IsParticipant}}Be the first to suggest one!{{else}}Join to suggest a date.{{end}}</p>
+</div>
+{{end}}
+{{end}}

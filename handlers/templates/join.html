@@ -1,0 +1,23 @@
+{{define "join"}}
+<div class="join-card card">
+  <p class="join-title">👋 Who are you?</p>
+  <form hx-post="/events/{{.EventId}}/join"
+        hx-target="body"
+        hx-push-url="true">
+    <div class="field">
+      <label class="field-label">Your name</label>
+      <input type="text" name="name" placeholder="e.g. Alex" required class="text-input" autocomplete="given-name" maxlength="50">
+    </div>
+    <div class="field">
+      <label class="field-label">Pick an emoji</label>
+      <div class="emoji-grid">
+        {{range .EmojiOptions}}
+        <button type="button" class="emoji-btn" onclick="selectEmoji(this,'{{.}}')">{{.}}</button>
+        {{end}}
+      </div>
+      <input type="hidden" name="emoji" id="emoji-input" value="{{index .EmojiOptions 0}}">
+    </div>
+    <button type="submit" class="btn-primary btn-full">Join Event</button>
+  </form>
+</div>
+{{end}}

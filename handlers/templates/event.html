@@ -1,0 +1,69 @@
+{{define "event"}}{{template "base" .}}{{end}}
+
+{{define "title"}}{{.EventName}} — Does This Work?{{end}}
+
+{{define "content"}}
+<div class="page-event" data-event-id="{{.EventId}}">
+
+  {{if .IsLocked}}
+  <div class="locked-banner">
+    <div class="locked-icon">🎉</div>
+    <div>
+      <div class="locked-label">It's happening!</div>
+      <div class="locked-date">{{.LockedDate.DateLabel}}</div>
+    </div>
+  </div>
+  {{end}}
+
+  <header class="event-header">
+    <a href="/" class="back-link">← Does This Work?</a>
+    <h1 class="event-title">{{.EventName}}</h1>
+    {{if .EventDescription}}<p class="event-desc">{{.EventDescription}}</p>{{end}}
+    <div class="share-row">
+      <span class="share-label">Share link</span>
+      <button class="btn-share" onclick="copyLink()" id="share-btn">📋 Copy</button>
+    </div>
+  </header>
+
+  {{if not .IsParticipant}}
+  <div id="join-panel">
+    {{template "join" .}}
+  </div>
+  {{else}}
+  <div id="join-panel"></div>
+  {{end}}
+
+  <div id="results">
+    {{template "results-content" .}}
+  </div>
+
+  {{if and .IsParticipant (not .IsLocked)}}
+  <div class="add-date-section card">
+    <p class="section-label">Suggest another date</p>
+    <form hx-post="/events/{{.EventId}}/dates"
+          hx-target="#results"
+          hx-swap="outerHTML">
+      <div class="date-add-row">
+        <input type="date" name="date" required class="date-input">
+        <button type="submit" class="btn-primary">Add</button>
+      </div>
+    </form>
+  </div>
+  {{end}}
+
+  {{if .Participants}}
+  <div class="participants-section">
+    <p class="section-label">Who's here ({{len .Participants}})</p>
+    <div class="participants-list">
+      {{range .Participants}}
+      <div class="participant-chip">
+        <span class="p-emoji">{{.Emoji}}</span>
+        <span class="p-name">{{.Name}}</span>
+      </div>
+      {{end}}
+    </div>
+  </div>
+  {{end}}
+
+</div>
+{{end}}

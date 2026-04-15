@@ -1,0 +1,18 @@
+[Unit]
+Description=Does This Work? — friend event planner
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/doesthiswork
+ExecStart=/opt/doesthiswork/doesthiswork serve --http=127.0.0.1:8090
+Restart=always
+RestartSec=5
+Environment=HOME=/opt/doesthiswork
+
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
