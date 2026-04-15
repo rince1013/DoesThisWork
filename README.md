@@ -43,36 +43,45 @@ The PocketBase admin dashboard is at [http://localhost:8090/_/](http://localhost
 ```bash
 make run      # Start dev server at localhost:8090
 make build    # Build binary for current platform
-make deploy   # git push → triggers Render auto-deploy
+make deploy   # Deploy to Fly.io
 make clean    # Remove built binary
 ```
 
 ## Deployment
 
-Hosted on [Render](https://render.com). Deploys automatically on every push to `main`.
+Hosted on [Fly.io](https://fly.io) — free tier with persistent storage. HTTPS is automatic.
 
-### First-time setup on Render
-
-1. **Create a Web Service** — connect your GitHub repo, then set:
-   - **Build Command:** `go build -o doesthiswork .`
-   - **Start Command:** `./doesthiswork serve --http=0.0.0.0:$PORT --dir=/var/data/pb_data`
-   - **Instance Type:** Free
-
-2. **Add a Persistent Disk** (required — free tier filesystem is ephemeral):
-   - Settings → **Disks → Add Disk**
-   - **Mount Path:** `/var/data`
-   - **Size:** 1 GB (~$0.25/month)
-
-3. **Add custom domain** — Settings → **Custom Domains** → `dtw.raishadandlisa.com`
-   - Render gives you a CNAME value to add on Namecheap (Advanced DNS → CNAME Record, Host: `dtw`)
-
-### Deploy
+### Prerequisites
 
 ```bash
-make deploy   # or just: git push origin main
+brew install flyctl
+fly auth login
 ```
 
-Render builds and restarts automatically. No SSH, no Caddy — HTTPS is handled by Render.
+### First-time setup
+
+```bash
+# Create the app (uses fly.toml config)
+fly apps create does-this-work
+
+# Create the persistent volume for SQLite data (free up to 3GB)
+fly volumes create dtw_data --region iad --size 1
+
+# Add your custom domain
+fly certs add dtw.raishadandlisa.com
+# Fly gives you an A record and AAAA record to add on Namecheap (Advanced DNS)
+
+# Deploy
+make deploy
+```
+
+### Subsequent deploys
+
+```bash
+make deploy
+```
+
+Fly builds the Docker image and does a rolling deploy. No downtime.
 
 ## Project structure
 
@@ -95,7 +104,9 @@ Render builds and restarts automatically. No SSH, no Caddy — HTTPS is handled 
 │   ├── style.css            # Mobile-first CSS
 │   └── app.js               # Realtime subscriptions, emoji picker, clipboard
 ├── doesthiswork.service     # systemd unit (VPS alternative)
-├── Caddyfile                # Reverse proxy config (automatic HTTPS)
+├── Dockerfile               # For Fly.io builds
+├── fly.toml                 # Fly.io app config
+├── Caddyfile                # Reverse proxy (VPS alternative)
 ```
 
 ## Identity (no login)

@@ -11,8 +11,7 @@ build:
 	$(GO) build -o $(BUILD) .
 
 deploy:
-	git push origin main
-	@echo "Render will build and deploy automatically."
+	fly deploy
 
 clean:
 	rm -f $(BUILD)
