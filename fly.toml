@@ -1,5 +1,5 @@
 app = "does-this-work"
-primary_region = "iad"
+primary_region = "ord"
 
 [build]
 
