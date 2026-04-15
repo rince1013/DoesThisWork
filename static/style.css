@@ -194,6 +194,15 @@ label, .field-label {
   border-color: var(--accent);
   color: #fff;
 }
+.vote-btn--active .vote-btn-hint {
+  opacity: 0.6;
+  font-size: .75rem;
+}
+.vote-btn--preferred {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #fff;
+}
 .vote-btn:active { transform: scale(.95); }
 
 .lock-btn, .delete-btn {
@@ -219,7 +228,11 @@ label, .field-label {
 }
 .voters { display: flex; gap: -4px; }
 .voter-emoji { font-size: 1.1rem; }
+.voter-preferred { position: relative; }
+.voter-preferred::after { content: '⭐'; font-size: .5rem; position: absolute; top: -2px; right: -4px; }
+.vote-counts { display: flex; align-items: center; gap: 8px; }
 .vote-count { font-size: .8rem; color: var(--muted); }
+.preferred-count { font-size: .8rem; color: #f59e0b; font-weight: 600; }
 
 /* ─── No dates ────────────────────────────────────────────────── */
 .no-dates p { color: var(--muted); text-align: center; padding: 8px 0; }

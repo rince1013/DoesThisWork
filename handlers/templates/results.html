@@ -16,11 +16,11 @@
       </div>
       <div class="date-actions">
         {{if and $.IsParticipant (not $.IsLocked)}}
-        <button class="vote-btn {{if $d.UserVoted}}vote-btn--active{{end}}"
+        <button class="vote-btn {{if $d.UserPreferred}}vote-btn--preferred{{else if $d.UserVoted}}vote-btn--active{{end}}"
           hx-post="/events/{{$.EventId}}/votes/{{$d.Id}}"
           hx-target="#results"
           hx-swap="outerHTML">
-          {{if $d.UserVoted}}✓ Going{{else}}+ Going{{end}}
+          {{if $d.UserPreferred}}⭐ Prefer{{else if $d.UserVoted}}✓ Going <span class="vote-btn-hint">· ⭐?</span>{{else}}+ Going{{end}}
         </button>
         {{end}}
         {{if and $.IsCreator (not $.IsLocked)}}
@@ -43,9 +43,18 @@
     </div>
     <div class="date-card-bottom">
       <div class="voters">
-        {{range $d.Voters}}<span class="voter-emoji" title="{{.Name}}">{{.Emoji}}</span>{{end}}
+        {{range $d.PreferredVoters}}<span class="voter-emoji voter-preferred" title="{{.Name}} (prefers this)">{{.Emoji}}</span>{{end}}
+        {{range $d.Voters}}
+          {{$pid := .Id}}
+          {{$isPreferred := false}}
+          {{range $d.PreferredVoters}}{{if eq .Id $pid}}{{$isPreferred = true}}{{end}}{{end}}
+          {{if not $isPreferred}}<span class="voter-emoji" title="{{.Name}}">{{.Emoji}}</span>{{end}}
+        {{end}}
       </div>
-      <span class="vote-count">{{$d.VoteCount}} {{if eq $d.VoteCount 1}}person{{else}}people{{end}}</span>
+      <div class="vote-counts">
+        <span class="vote-count">{{$d.VoteCount}} {{if eq $d.VoteCount 1}}person{{else}}people{{end}}</span>
+        {{if $d.PreferredCount}}<span class="preferred-count">⭐ {{$d.PreferredCount}}</span>{{end}}
+      </div>
     </div>
   </div>
   {{end}}

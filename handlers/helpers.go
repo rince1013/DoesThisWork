@@ -70,12 +70,15 @@ func newToken() string {
 
 // DateOptionView is a date option enriched with vote data.
 type DateOptionView struct {
-	Id        string
-	Date      string
-	DateLabel string // human-friendly format
-	Voters    []ParticipantView
-	VoteCount int
-	UserVoted bool
+	Id              string
+	Date            string
+	DateLabel       string // human-friendly format
+	Voters          []ParticipantView
+	PreferredVoters []ParticipantView
+	VoteCount       int
+	PreferredCount  int
+	UserVoted       bool
+	UserPreferred   bool
 }
 
 // ParticipantView is a slim participant representation.
@@ -172,30 +175,45 @@ func buildEventPageData(app core.App, e *core.RequestEvent, event *core.Record) 
 			votes = []*core.Record{}
 		}
 		voters := make([]ParticipantView, 0, len(votes))
+		preferredVoters := make([]ParticipantView, 0)
 		userVoted := false
+		userPreferred := false
 		for _, v := range votes {
 			pid := v.GetString("participant_id")
+			preferred := v.GetBool("preferred")
 			if pv, ok := participantMap[pid]; ok {
 				voters = append(voters, pv)
+				if preferred {
+					preferredVoters = append(preferredVoters, pv)
+				}
 			}
 			if isParticipant && pid == currentParticipant.Id {
 				userVoted = true
+				if preferred {
+					userPreferred = true
+				}
 			}
 		}
 		dateOptions = append(dateOptions, DateOptionView{
-			Id:        d.Id,
-			Date:      d.GetString("date"),
-			DateLabel: formatDate(d.GetString("date")),
-			Voters:    voters,
-			VoteCount: len(votes),
-			UserVoted: userVoted,
+			Id:              d.Id,
+			Date:            d.GetString("date"),
+			DateLabel:       formatDate(d.GetString("date")),
+			Voters:          voters,
+			PreferredVoters: preferredVoters,
+			VoteCount:       len(votes),
+			PreferredCount:  len(preferredVoters),
+			UserVoted:       userVoted,
+			UserPreferred:   userPreferred,
 		})
 	}
 
-	// sort by vote count descending, then by date ascending
+	// sort by vote count desc, then preferred count desc, then date asc
 	sort.Slice(dateOptions, func(i, j int) bool {
 		if dateOptions[i].VoteCount != dateOptions[j].VoteCount {
 			return dateOptions[i].VoteCount > dateOptions[j].VoteCount
+		}
+		if dateOptions[i].PreferredCount != dateOptions[j].PreferredCount {
+			return dateOptions[i].PreferredCount > dateOptions[j].PreferredCount
 		}
 		return dateOptions[i].Date < dateOptions[j].Date
 	})

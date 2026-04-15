@@ -40,12 +40,20 @@ func toggleVoteHandler(app core.App) func(*core.RequestEvent) error {
 			dbx.Params{"did": dateId, "pid": participant.Id},
 		)
 		if err == nil {
-			// vote exists — remove it
-			if err := app.Delete(existing); err != nil {
-				return err
+			if !existing.GetBool("preferred") {
+				// available → preferred
+				existing.Set("preferred", true)
+				if err := app.Save(existing); err != nil {
+					return err
+				}
+			} else {
+				// preferred → remove
+				if err := app.Delete(existing); err != nil {
+					return err
+				}
 			}
 		} else {
-			// no vote yet — add it
+			// no vote → available
 			col, err := app.FindCollectionByNameOrId("votes")
 			if err != nil {
 				return err
@@ -53,6 +61,7 @@ func toggleVoteHandler(app core.App) func(*core.RequestEvent) error {
 			vote := core.NewRecord(col)
 			vote.Set("date_option_id", dateId)
 			vote.Set("participant_id", participant.Id)
+			vote.Set("preferred", false)
 			if err := app.Save(vote); err != nil {
 				return err
 			}
