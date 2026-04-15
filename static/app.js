@@ -66,7 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
   pb.collection('date_options').subscribe('*', scheduleRefresh, {
     filter: `event_id = '${eventId}'`,
   });
-  pb.collection('votes').subscribe('*', scheduleRefresh);
+
+  // Subscribe to votes only for date options belonging to this event.
+  // PocketBase realtime doesn't support relation filters, so we fetch
+  // the date option IDs first and build an explicit filter.
+  pb.collection('date_options').getFullList({ filter: `event_id = '${eventId}'` })
+    .then(opts => {
+      if (!opts.length) return;
+      const ids = opts.map(o => `date_option_id = '${o.id}'`).join(' || ');
+      pb.collection('votes').subscribe('*', scheduleRefresh, { filter: ids });
+    })
+    .catch(() => {
+      // fallback: subscribe to all votes if prefetch fails
+      pb.collection('votes').subscribe('*', scheduleRefresh);
+    });
 
   // Participants joining: reload so "Who's here?" updates
   pb.collection('participants').subscribe('*', () => {

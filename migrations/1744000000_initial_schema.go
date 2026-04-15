@@ -55,7 +55,7 @@ func createInitialCollections(app core.App) error {
 		return err
 	}
 
-	// votes
+	// votes — unique constraint prevents duplicate votes from race conditions
 	votes := core.NewBaseCollection("votes")
 	votes.ListRule = ptr("")
 	votes.ViewRule = ptr("")
@@ -63,6 +63,7 @@ func createInitialCollections(app core.App) error {
 		&core.TextField{Name: "date_option_id", Required: true},
 		&core.TextField{Name: "participant_id", Required: true},
 	)
+	votes.Indexes = append(votes.Indexes, "CREATE UNIQUE INDEX idx_votes_unique ON votes (date_option_id, participant_id)")
 	return app.Save(votes)
 }
 

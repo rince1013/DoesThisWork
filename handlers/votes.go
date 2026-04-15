@@ -1,7 +1,6 @@
 package handlers
 
 import (
-
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/core"
 )
@@ -30,6 +29,12 @@ func toggleVoteHandler(app core.App) func(*core.RequestEvent) error {
 		}
 
 		// toggle: remove if exists, add if not
+		// validate the date belongs to this event first
+		dateOpt, err := app.FindRecordById("date_options", dateId)
+		if err != nil || dateOpt.GetString("event_id") != eventId {
+			return e.NotFoundError("date not found", nil)
+		}
+
 		existing, err := app.FindFirstRecordByFilter("votes",
 			"date_option_id={:did} && participant_id={:pid}",
 			dbx.Params{"did": dateId, "pid": participant.Id},
@@ -88,10 +93,15 @@ func lockDateHandler(app core.App) func(*core.RequestEvent) error {
 			return e.NotFoundError("event not found", nil)
 		}
 
-		// only creator may lock
+		// only creator may lock; validate date belongs to this event
 		creatorToken := getCreatorToken(e.Request, eventId)
 		if creatorToken == "" || creatorToken != event.GetString("creator_token") {
 			return e.ForbiddenError("only the creator can lock a date", nil)
+		}
+
+		dateOpt, err := app.FindRecordById("date_options", dateId)
+		if err != nil || dateOpt.GetString("event_id") != eventId {
+			return e.NotFoundError("date not found", nil)
 		}
 
 		event.Set("locked_date_id", dateId)

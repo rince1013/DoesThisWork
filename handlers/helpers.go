@@ -37,6 +37,7 @@ func setCreatorCookie(e *core.RequestEvent, eventId, token string) {
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
+		Secure:   true,
 		MaxAge:   60 * 60 * 24 * 365,
 	})
 }
@@ -48,6 +49,7 @@ func setParticipantCookie(e *core.RequestEvent, eventId, token string) {
 		Path:     "/",
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
+		Secure:   true,
 		MaxAge:   60 * 60 * 24 * 365,
 	})
 }

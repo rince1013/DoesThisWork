@@ -83,6 +83,9 @@ func deleteDateHandler(app core.App) func(*core.RequestEvent) error {
 		if err != nil {
 			return e.NotFoundError("date not found", nil)
 		}
+		if dateOpt.GetString("event_id") != eventId {
+			return e.NotFoundError("date not found", nil)
+		}
 
 		// only the proposer or the creator may delete
 		creatorToken := getCreatorToken(e.Request, eventId)
