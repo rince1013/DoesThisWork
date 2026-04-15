@@ -19,10 +19,11 @@
     <a href="/" class="back-link">← Does This Work?</a>
     <h1 class="event-title">{{.EventName}}</h1>
     {{if .EventDescription}}<p class="event-desc">{{.EventDescription}}</p>{{end}}
-    <div class="share-row">
-      <span class="share-label">Share link</span>
-      <button class="btn-share" onclick="copyLink()" id="share-btn">📋 Copy</button>
-    </div>
+    <button class="btn-share" onclick="copyLink()" id="share-btn">
+      <span class="share-icon">🔗</span>
+      <span class="share-url" id="share-url"></span>
+      <span class="share-copy-label">Tap to copy</span>
+    </button>
   </header>
 
   {{if not .IsParticipant}}

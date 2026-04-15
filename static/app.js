@@ -213,20 +213,24 @@ function selectEmoji(btn, emoji) {
 }
 
 // ── Share link ───────────────────────────────────────────────────
+function initShareBtn() {
+  const urlEl = document.getElementById('share-url');
+  if (urlEl) urlEl.textContent = window.location.href;
+}
+
 function copyLink() {
   const url = window.location.href;
+  const btn = document.getElementById('share-btn');
+  const copyLabel = btn && btn.querySelector('.share-copy-label');
   navigator.clipboard.writeText(url).then(() => {
-    const btn = document.getElementById('share-btn');
     if (!btn) return;
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copied!';
     btn.classList.add('copied');
+    if (copyLabel) copyLabel.textContent = '✓ Copied!';
     setTimeout(() => {
-      btn.textContent = orig;
       btn.classList.remove('copied');
+      if (copyLabel) copyLabel.textContent = 'Tap to copy';
     }, 2000);
   }).catch(() => {
-    // Fallback for browsers without clipboard API
     prompt('Copy this link:', url);
   });
 }
@@ -235,6 +239,8 @@ function copyLink() {
 document.addEventListener('DOMContentLoaded', () => {
   const firstEmoji = document.querySelector('.emoji-btn');
   if (firstEmoji) firstEmoji.classList.add('selected');
+
+  initShareBtn();
 
   // Init all calendars
   document.querySelectorAll('[data-calendar]').forEach(el => new Calendar(el));

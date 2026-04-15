@@ -100,21 +100,26 @@ label, .field-label {
 .btn-ghost:hover { background: var(--accent-bg); }
 
 .btn-share {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  height: 38px;
-  padding: 0 16px;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 14px;
   background: var(--accent-bg);
   color: var(--accent);
-  border-radius: 20px;
+  border-radius: 10px;
   font-size: .875rem;
   font-weight: 600;
   transition: background .15s;
-  flex-shrink: 0;
+  text-align: left;
+  touch-action: manipulation;
 }
 .btn-share:active { background: #dde4fd; }
 .btn-share.copied { background: var(--green-bg); color: var(--green); }
+.share-icon { flex-shrink: 0; font-size: 1rem; }
+.share-url { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; color: var(--text); font-size: .8rem; }
+.share-copy-label { flex-shrink: 0; font-size: .8rem; }
 
 /* ─── Landing page ────────────────────────────────────────────── */
 .hero { text-align: center; padding: 32px 0 24px; }
@@ -130,16 +135,7 @@ label, .field-label {
 .event-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -.3px; }
 .event-desc { color: var(--muted); margin-top: 4px; font-size: .95rem; }
 
-.share-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 14px;
-  padding: 10px 14px;
-  background: var(--accent-bg);
-  border-radius: 10px;
-}
-.share-label { font-size: .875rem; color: var(--accent); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 
 /* ─── Locked banner ───────────────────────────────────────────── */
 .locked-banner {
