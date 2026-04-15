@@ -20,7 +20,7 @@
           hx-post="/events/{{$.EventId}}/votes/{{$d.Id}}"
           hx-target="#results"
           hx-swap="outerHTML">
-          {{if $d.UserPreferred}}⭐ Prefer{{else if $d.UserVoted}}✓ Going <span class="vote-btn-hint">· ⭐?</span>{{else}}+ Going{{end}}
+          {{if $d.UserPreferred}}⭐ Prefer{{else if $d.UserVoted}}✓ Works <span class="vote-btn-hint">· ⭐?</span>{{else}}+ Works{{end}}
         </button>
         {{end}}
         {{if and $.IsCreator (not $.IsLocked)}}

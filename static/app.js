@@ -32,7 +32,6 @@ class Calendar {
   render() {
     this.container.innerHTML = '';
     this.container.appendChild(this._renderGrid());
-    if (this.mode !== 'single') this.container.appendChild(this._renderManual());
     if (this.selected.size > 0) this.container.appendChild(this._renderChips());
     this._syncInputs();
   }
