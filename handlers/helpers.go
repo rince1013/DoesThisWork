@@ -73,6 +73,7 @@ type DateOptionView struct {
 	Id              string
 	Date            string
 	DateLabel       string // human-friendly format
+	Medal           string
 	Voters          []ParticipantView
 	PreferredVoters []ParticipantView
 	VoteCount       int
@@ -217,6 +218,21 @@ func buildEventPageData(app core.App, e *core.RequestEvent, event *core.Record) 
 		}
 		return dateOptions[i].Date < dateOptions[j].Date
 	})
+
+	// Olympic-style medals: ties share the same medal, next medals are skipped
+	medals := []string{"🥇", "🥈", "🥉"}
+	rank := 0
+	for i := range dateOptions {
+		if dateOptions[i].VoteCount == 0 {
+			break
+		}
+		if i > 0 && dateOptions[i].VoteCount < dateOptions[i-1].VoteCount {
+			rank = i
+		}
+		if rank < len(medals) {
+			dateOptions[i].Medal = medals[rank]
+		}
+	}
 
 	// --- locked date ---
 	isLocked := false

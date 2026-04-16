@@ -17,7 +17,7 @@
     data-votes="{{$d.VoteCount}}" data-preferred="{{$d.PreferredCount}}" data-date="{{$d.Date}}">
     <div class="date-card-top">
       <div class="date-info">
-        {{if eq $i 0}}{{if gt $d.VoteCount 0}}<span class="rank-badge">🥇</span>{{end}}{{else if eq $i 1}}{{if gt $d.VoteCount 0}}<span class="rank-badge">🥈</span>{{end}}{{else if eq $i 2}}{{if gt $d.VoteCount 0}}<span class="rank-badge">🥉</span>{{end}}{{end}}
+        {{if $d.Medal}}<span class="rank-badge">{{$d.Medal}}</span>{{end}}
         <span class="date-label">{{$d.DateLabel}}</span>
       </div>
       {{if and $.IsParticipant (not $.IsLocked)}}

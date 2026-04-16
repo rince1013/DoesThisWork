@@ -99,6 +99,7 @@ class Calendar {
       if (!isPast) {
         cell.addEventListener('pointerdown', (e) => {
           e.preventDefault();
+          document.activeElement?.blur();
           this._toggle(dateStr, cell);
         });
       }
@@ -222,11 +223,10 @@ function copyLink() {
   const btn = document.getElementById('share-btn');
   const copyLabel = btn && btn.querySelector('.share-copy-label');
   navigator.clipboard.writeText(url).then(() => {
-    if (!btn) return;
-    btn.classList.add('copied');
+    if (btn) btn.classList.add('copied');
     if (copyLabel) copyLabel.textContent = '✓ Copied!';
     setTimeout(() => {
-      btn.classList.remove('copied');
+      if (btn) btn.classList.remove('copied');
       if (copyLabel) copyLabel.textContent = 'Tap to copy';
     }, 2000);
   }).catch(() => {
