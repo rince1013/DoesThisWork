@@ -161,6 +161,7 @@ label, .field-label {
   border-radius: var(--radius);
   padding: 14px 16px;
   transition: border-color .15s;
+  position: relative;
 }
 .date-card.voted { border-color: var(--accent); background: var(--accent-bg); }
 .date-card.locked { border-color: var(--locked); background: var(--locked-bg); }
@@ -172,11 +173,9 @@ label, .field-label {
   gap: 8px;
 }
 
-.date-info { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.rank-badge { font-size: 1.1rem; flex-shrink: 0; }
+.date-info { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.rank-badge { font-size: .85rem; line-height: 1; }
 .date-label { font-weight: 600; font-size: 1rem; }
-
-.date-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
 .vote-btn {
   height: 36px;
@@ -205,20 +204,27 @@ label, .field-label {
 }
 .vote-btn:active { transform: scale(.95); }
 
-.lock-btn, .delete-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: .9rem;
+.date-card-admin {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.admin-btn {
+  flex: 1;
+  height: 34px;
+  border-radius: 8px;
+  font-size: .8rem;
+  font-weight: 600;
   background: var(--surface);
   border: 1.5px solid var(--border);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  color: var(--muted);
   transition: all .15s;
+  touch-action: manipulation;
 }
-.lock-btn:hover { background: var(--locked-bg); border-color: var(--locked); }
-.delete-btn:hover { background: #fee2e2; border-color: var(--red); }
+.admin-btn--lock:hover, .admin-btn--lock:active { background: var(--locked-bg); border-color: var(--locked); color: var(--locked); }
+.admin-btn--delete:hover, .admin-btn--delete:active { background: #fee2e2; border-color: var(--red); color: var(--red); }
 
 .date-card-bottom {
   display: flex;

@@ -246,11 +246,11 @@ func buildEventPageData(app core.App, e *core.RequestEvent, event *core.Record) 
 	}, nil
 }
 
-// formatDate converts "2006-01-02" to "Thursday, 4/16/2026".
+// formatDate converts "2006-01-02" to "Wednesday, 5/20".
 func formatDate(raw string) string {
 	t, err := time.Parse("2006-01-02", raw)
 	if err != nil {
 		return raw
 	}
-	return fmt.Sprintf("%s, %d/%d/%d", t.Format("Monday"), int(t.Month()), t.Day(), t.Year())
+	return fmt.Sprintf("%s, %d/%d", t.Format("Monday"), int(t.Month()), t.Day())
 }
