@@ -304,3 +304,31 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.reload();
   });
 });
+
+// Sort toggle for date results
+let _currentSort = 'date';
+function sortDates(mode) {
+  _currentSort = mode;
+  const list = document.getElementById('dates-list');
+  if (!list) return;
+  const cards = Array.from(list.querySelectorAll('.date-card'));
+  cards.sort((a, b) => {
+    if (mode === 'votes') {
+      const vDiff = parseInt(b.dataset.votes) - parseInt(a.dataset.votes);
+      if (vDiff !== 0) return vDiff;
+      const pDiff = parseInt(b.dataset.preferred) - parseInt(a.dataset.preferred);
+      if (pDiff !== 0) return pDiff;
+      return a.dataset.date.localeCompare(b.dataset.date);
+    } else {
+      return a.dataset.date.localeCompare(b.dataset.date);
+    }
+  });
+  cards.forEach(c => list.appendChild(c));
+  document.getElementById('sort-votes').classList.toggle('sort-btn--active', mode === 'votes');
+  document.getElementById('sort-date').classList.toggle('sort-btn--active', mode === 'date');
+}
+
+// Re-apply sort after HTMX swaps in new results
+document.addEventListener('htmx:afterSwap', () => sortDates(_currentSort));
+// Apply default sort on initial load
+document.addEventListener('DOMContentLoaded', () => sortDates(_currentSort));

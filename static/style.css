@@ -153,6 +153,14 @@ label, .field-label {
 .locked-date { font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
 
 /* ─── Date cards ──────────────────────────────────────────────── */
+.sort-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.sort-label { font-size: .8rem; color: var(--muted); }
+.sort-btn {
+  height: 28px; padding: 0 12px; border-radius: 14px; font-size: .8rem; font-weight: 600;
+  background: var(--surface); border: 1.5px solid var(--border); color: var(--muted);
+  touch-action: manipulation;
+}
+.sort-btn--active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .dates-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
 
 .date-card {

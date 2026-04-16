@@ -118,6 +118,11 @@ func deleteDateHandler(app core.App) func(*core.RequestEvent) error {
 			return e.ForbiddenError("not allowed", nil)
 		}
 
+		// prevent deleting a locked date
+		if isCreator && event.GetString("locked_date_id") == dateId {
+			return e.BadRequestError("cannot delete the locked date; unlock it first", nil)
+		}
+
 		// delete associated votes first
 		votes, _ := app.FindRecordsByFilter("votes", "date_option_id={:did}", "", 0, 0, dbx.Params{"did": dateId})
 		for _, v := range votes {
