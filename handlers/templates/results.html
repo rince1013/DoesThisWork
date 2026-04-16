@@ -15,12 +15,20 @@
         <span class="date-label">{{$d.DateLabel}}</span>
       </div>
       {{if and $.IsParticipant (not $.IsLocked)}}
-      <button class="vote-btn {{if $d.UserPreferred}}vote-btn--preferred{{else if $d.UserVoted}}vote-btn--active{{end}}"
-        hx-post="/events/{{$.EventId}}/votes/{{$d.Id}}"
-        hx-target="#results"
-        hx-swap="outerHTML">
-        {{if $d.UserPreferred}}⭐ Prefer{{else if $d.UserVoted}}✓ Works <span class="vote-btn-hint">· ⭐?</span>{{else}}+ Works{{end}}
-      </button>
+      <div class="vote-btns">
+        <button class="vote-btn {{if $d.UserVoted}}vote-btn--active{{end}}"
+          hx-post="/events/{{$.EventId}}/votes/{{$d.Id}}"
+          hx-target="#results"
+          hx-swap="outerHTML">
+          {{if $d.UserVoted}}✓ Works{{else}}+ Works{{end}}
+        </button>
+        <button class="vote-btn vote-btn--star {{if $d.UserPreferred}}vote-btn--preferred{{end}}"
+          hx-post="/events/{{$.EventId}}/prefer/{{$d.Id}}"
+          hx-target="#results"
+          hx-swap="outerHTML">
+          ⭐ Prefer
+        </button>
+      </div>
       {{end}}
     </div>
     <div class="date-card-bottom">
@@ -44,15 +52,15 @@
         hx-post="/events/{{$.EventId}}/lock/{{$d.Id}}"
         hx-target="#results"
         hx-swap="outerHTML"
-        hx-confirm="Lock {{$d.DateLabel}} as the final date?">
-        🔒 Lock as final date
+        hx-confirm="Lock {{$d.DateLabel}} as the Final Date?">
+        🔒 Lock as Final Date
       </button>
       <button class="admin-btn admin-btn--delete"
         hx-delete="/events/{{$.EventId}}/dates/{{$d.Id}}"
         hx-target="#results"
         hx-swap="outerHTML"
         hx-confirm="Remove this date option for everyone?">
-        ✕ Remove date
+        ✕ Remove Date
       </button>
     </div>
     {{end}}

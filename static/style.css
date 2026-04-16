@@ -177,9 +177,10 @@ label, .field-label {
 .rank-badge { font-size: .85rem; line-height: 1; }
 .date-label { font-weight: 600; font-size: 1rem; }
 
+.vote-btns { display: flex; gap: 6px; flex-shrink: 0; }
 .vote-btn {
   height: 36px;
-  padding: 0 14px;
+  padding: 0 12px;
   border-radius: 20px;
   font-size: .875rem;
   font-weight: 600;
@@ -187,15 +188,16 @@ label, .field-label {
   border: 1.5px solid var(--border);
   color: var(--muted);
   transition: all .15s;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+.vote-btn--star {
+  padding: 0 10px;
 }
 .vote-btn--active {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
-}
-.vote-btn--active .vote-btn-hint {
-  opacity: 0.6;
-  font-size: .75rem;
 }
 .vote-btn--preferred {
   background: #f59e0b;
