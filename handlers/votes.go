@@ -97,8 +97,9 @@ func togglePreferHandler(app core.App) func(*core.RequestEvent) error {
 		)
 		if err == nil {
 			if existing.GetBool("preferred") {
-				// already preferred — remove vote entirely
-				if err := app.Delete(existing); err != nil {
+				// already preferred — downgrade to regular vote
+				existing.Set("preferred", false)
+				if err := app.Save(existing); err != nil {
 					return err
 				}
 			} else {

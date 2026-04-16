@@ -225,8 +225,10 @@ label, .field-label {
   transition: all .15s;
   touch-action: manipulation;
 }
-.admin-btn--lock:hover, .admin-btn--lock:active { background: var(--locked-bg); border-color: var(--locked); color: var(--locked); }
-.admin-btn--delete:hover, .admin-btn--delete:active { background: #fee2e2; border-color: var(--red); color: var(--red); }
+@media (hover: hover) {
+  .admin-btn--lock:hover { background: var(--locked-bg); border-color: var(--locked); color: var(--locked); }
+  .admin-btn--delete:hover { background: #fee2e2; border-color: var(--red); color: var(--red); }
+}
 
 .date-card-bottom {
   display: flex;
